@@ -1,7 +1,0 @@
-void setup() {
-  size(1000, 1000);
-  terrain = loadImage("muddy.png");
-  image(terrain, 0, 0);
-}
-
-PImage terrain;
