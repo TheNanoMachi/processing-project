@@ -99,9 +99,9 @@ class Soldier {
         stroke(255);
         strokeWeight(2);
         fill(0, 0, 0, 0);
-        circle(this.x, this.y, this.sight*2);
+        //circle(this.x, this.y, this.sight*2);
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
-            line(this.x, this.y, s.x, s.y);
+            //line(this.x, this.y, s.x, s.y);
             this.move(deltaX*this.speed, deltaY*this.speed);
         }
         else {
@@ -110,6 +110,6 @@ class Soldier {
     }
 
     void attack() {
-        projectile.shoot(this);
+       
     }
 }

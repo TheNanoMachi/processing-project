@@ -5,7 +5,9 @@ color teamRed = color(255, 0, 0), teamBlue = color(0, 0, 255), linf = color(255,
       lrinf = color(0, 255, 0);
 Sniper_Projectile one = new Sniper_Projectile(1.1, 252, 0, 0);
 SoldierSniper tester = new SoldierSniper("Red", lrinf, teamRed, one);
-SoldierSniper tester2 = new SoldierSniper("Blue", lrinf, teamRed, one, 200, 200);
+LightCavalrySoldier tester2 = new Soldier("Blue", linf, teamBlue, 500, one, 10, 800, 200);
+
+//Army Blue = new Army();
 
 void setup() {
   size(1000, 1000);
@@ -19,8 +21,10 @@ void setup() {
 
 void draw() {
     image(grassTerrain, 0, 0);
-    tester.display();
-    tester2.display();
     tester.pathfind(tester2);
-    one.shoot(tester);
+    tester2.pathfind(tester);
+    if(tester.attacked) {
+      one.shoot(tester, tester2);
+    }
+    //one.shoot(tester);
 }
