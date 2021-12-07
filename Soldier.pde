@@ -10,6 +10,7 @@ class Soldier {
     float speed;
     boolean drawSquare;
     Projectile projectile;
+    Soldier target;
 
     Soldier(String type, String team, color typeC, color teamC, int sight, Projectile proj) {
         this.type = type;
@@ -68,13 +69,10 @@ class Soldier {
         this.y += yMag;
         this.display();
     } 
-
+    // The method is for melee units. Ranged units will start moving backwards
+    // and attempt to keep distance if an enemy is too close.
     void pathfind(Soldier s) {
-        // ArrayList<float> distances = new ArrayList<float>;
-        // float distance = dist(this.x, this.y, other.x, other.y);
-        // ArrayList<float[]> coordinates = new ArrayList<float[]>;
-        // float[] temp = {other.x, other.y};
-        // coordinates.add(temp);
+        this.target = s;
         float deltaX = (s.x - this.x);
         if (deltaX < 0) {
             deltaX = -1;
@@ -99,17 +97,23 @@ class Soldier {
         stroke(255);
         strokeWeight(2);
         fill(0, 0, 0, 0);
-        //circle(this.x, this.y, this.sight*2);
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
-            //line(this.x, this.y, s.x, s.y);
             this.move(deltaX*this.speed, deltaY*this.speed);
+            if(dist(this.x, this.y, s.x, s.y) <= 10) { // TODO: replace this with field
+                this.attack();
+            }
         }
         else {
-            //this.move(this.speed, 0);
         }
     }
 
     void attack() {
-       
+       // each soldier type will attack differently.
+    }
+
+    void runAway() {
+        int xChoice = int(random(-1, 1));
+        int yChoice = int(random(-1, 1));
+        this.move(xChoice*this.speed, yChoice*this.speed);
     }
 }

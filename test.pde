@@ -5,7 +5,7 @@ color teamRed = color(255, 0, 0), teamBlue = color(0, 0, 255), linf = color(255,
       lrinf = color(0, 255, 0);
 Sniper_Projectile one = new Sniper_Projectile(1.1, 252, 0, 0);
 SoldierSniper tester = new SoldierSniper("Red", lrinf, teamRed, one);
-LightCavalrySoldier tester2 = new Soldier("Blue", linf, teamBlue, 500, one, 10, 800, 200);
+LightCavalrySoldier tester2 = new LightCavalrySoldier("Blue", linf, teamBlue, one, 800, 200);
 
 //Army Blue = new Army();
 

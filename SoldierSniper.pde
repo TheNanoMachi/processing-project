@@ -40,6 +40,9 @@ class SoldierSniper extends Soldier {
             //line(this.x, this.y, s.x, s.y);
             this.move(-deltaX*this.speed, -deltaY*this.speed);
             this.attacked = true;
+            if(dist(this.x, this.y, this.target.x, this.target.y) <= 30) {
+                this.runAway();
+            }
         }
         else {
             this.move(this.speed, 0);
