@@ -1,41 +1,11 @@
-class Projectile {
-    float speed;
-    float spread;
-    int size;
-    color colour;
-
-    float x;
-    float y;
-    float targetX, targetY;
-
-    float deltaX, deltaY;
-
-    String type;
-    boolean fired;
-    boolean gone;
-
-    float damage;
-
-    Projectile(float speed, float spread, color colour, float x, float y, String type) {
-        this.speed = speed;
-        this.spread = spread;
-        this.colour = colour;
-
-        this.x = x;
-        this.y = y;
-
-        this.type = type;
-        this.fired = false;
-
-        this.targetX = 0;
-        this.targetY = 0;
-
-        this.deltaX = 0;
-        this.deltaY = 0;
-        this.gone = false;
-        this.damage = 10;
+class ArtilleryProjectile extends Projectile {
+    float aoeRange;
+    ArtilleryProjectile(float spread, color colour, float x, float y, float area) {
+        super(10, spread, colour, x, y, "Artillery");
+        aoeRange = area;
     }
 
+    @Override
     void shoot(Soldier s, Soldier target) {
         if(this.gone) {
             return;
@@ -76,20 +46,10 @@ class Projectile {
         println(deltaX, deltaY, this.x, this.y, targetX, targetY);
         this.move(deltaX*this.speed, deltaY*this.speed);
         if(this.x - targetX <= 5 && this.y - targetY <= 5) {
-            println("gone");
+            // since this is an artillery projectile
+            // it does area of effect damage
+            circle(this.x, this.y, aoeRange);
             gone = true;
         }
-        
-
-        // stroke(colour);
-        // line(this.x, this.y, this.x-50, this.y-50);
     }
-
-    void move(float xMag, float yMag) {
-        this.x += xMag;
-        this.y += yMag;
-        stroke(colour);
-        line(this.x, this.y, this.x+(deltaX*50), this.y+(deltaY*50));
-    }
-
 }
