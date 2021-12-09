@@ -8,9 +8,15 @@ class LightCavalrySoldier extends Soldier {
 
     @Override
     void attack() {
+        this.deathCheck();
+        if(this.target == null) {
+            return;
+        }
         fill(0, 0, 0, 0);
         stroke(this.teamColour);
         strokeWeight(5);
         circle(this.x, this.y, 30);
     }
+
+    
 }
