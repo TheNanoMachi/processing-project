@@ -13,6 +13,7 @@ class Projectile {
     String type;
     boolean fired;
     boolean gone;
+    boolean resetShotFlag;
 
     float damage;
 
@@ -33,10 +34,16 @@ class Projectile {
         this.deltaX = 0;
         this.deltaY = 0;
         this.gone = false;
+        this.resetShotFlag = false;
         this.damage = 10;
     }
 
     void shoot(Soldier s, Soldier target) {
+        if(this.resetShotFlag) {
+            this.fired = false;
+            this.gone = false;
+            this.resetShotFlag = false;
+        }
         if(this.gone) {
             return;
         }
@@ -49,7 +56,6 @@ class Projectile {
             this.targetY = target.y;
             println("working");
             fired = true; 
-
         }
 
         deltaX = (targetX - this.x);

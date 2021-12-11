@@ -60,10 +60,25 @@ class Soldier {
         this.vitality = 10;
         this.alive = true;
     }
+        Soldier(String type, String team, color typeC, color teamC, int sight, float speed, float x, float y) {
+        this.type = type;
+        this.team = team;
+        this.teamColour = teamC;
+        this.typeColour = typeC;
+        this.x = x;
+        this.y = y;
+        this.drawSquare = false;
+        this.alpha = alpha;
+        this.sight = sight;
+        this.speed = speed;
+        this.vitality = 10;
+        this.alive = true;
+    }
 
     void display() {
         // Do not draw the soldier if it is dead.
         if(!this.alive) {
+            println("dead");
             return;
         }
 
@@ -173,7 +188,6 @@ class Soldier {
         if(this.target != null) {
             this.deathCheck();
         }
-            
     }
 
     void attack() {

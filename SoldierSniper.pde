@@ -68,6 +68,9 @@ class SoldierSniper extends Soldier {
 
     void attack(Soldier target) {
         // fire projectile
+        if(!this.alive) {
+            return;
+        }
         this.projectile.shoot(this, target);
     }
 }
