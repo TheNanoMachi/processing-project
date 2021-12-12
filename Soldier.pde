@@ -14,6 +14,7 @@ class Soldier {
     float vitality;
     float armour;
     boolean alive;
+    float deltaX, deltaY;
 
     Soldier(String type, String team, color typeC, color teamC, int sight, Projectile proj) {
         this.type = type;
@@ -29,6 +30,8 @@ class Soldier {
         this.projectile = proj;
         this.vitality = 10;
         this.alive = true;
+        this.deltaX = 0;
+        this.deltaY = 0;
     }
     Soldier(String type, String team, color typeC, color teamC, int sight, Projectile proj, float speed) {
         this.type = type;
@@ -44,6 +47,8 @@ class Soldier {
         this.projectile = proj;
         this.vitality = 10;
         this.alive = true;
+        this.deltaX = 0;
+        this.deltaY = 0;
     }
     Soldier(String type, String team, color typeC, color teamC, int sight, Projectile proj, float speed, float x, float y) {
         this.type = type;
@@ -59,8 +64,10 @@ class Soldier {
         this.projectile = proj;
         this.vitality = 10;
         this.alive = true;
+        this.deltaX = 0;
+        this.deltaY = 0;
     }
-        Soldier(String type, String team, color typeC, color teamC, int sight, float speed, float x, float y) {
+    Soldier(String type, String team, color typeC, color teamC, int sight, float speed, float x, float y) {
         this.type = type;
         this.team = team;
         this.teamColour = teamC;
@@ -73,6 +80,8 @@ class Soldier {
         this.speed = speed;
         this.vitality = 10;
         this.alive = true;
+        this.deltaX = 0;
+        this.deltaY = 0;
     }
 
     void display() {
@@ -102,9 +111,9 @@ class Soldier {
 
     void move(float xMag, float yMag) {
         // Move the soldier by a certain x and y value.
-        this.x += xMag;
-        this.y += yMag;
         this.display();
+        this.x += xMag;
+        this.y += yMag;       
     } 
 
     // The method is for melee units. Ranged units will start moving backwards
@@ -117,11 +126,67 @@ class Soldier {
         // set target
         this.target = s;
         // if there is no target, move east as if the unit's target is out of sight
-        if(this.target == null) {
-            println("no more target");
-            this.move(this.speed, 0);
+        if(!this.target.alive) {
+            // if(this.x >= 1000) {
+            //     this.x = 10;
+            // }
+            // else if(this.x <= 0) {
+            //     this.x = 990;
+            // }
+            if(this.x >= 1000) {
+                this.deltaX = -1;
+                while(this.x >= 500) {
+                    this.move(this.deltaX*this.speed, 0);
+                }
+            }
+            else if(this.x <= 0) {
+                this.deltaX = 1;
+                while(this.x <= 500) {
+                    this.move(this.deltaX*this.speed, 0);
+                }
+            }
+            else {
+                this.move(this.speed, 0);
+            }
             return;
         }
+
+        // for(Soldier s1 : blue.soldiers) {
+        //     if(this.x - s1.x < 10) {
+        //         this.x += 10;
+        //         this.display();
+        //     }
+        //     else if(s1.x - this.x < 10) {
+        //         this.x -= 10;
+        //         this.display();
+        //     }
+        //     if(this.y - s1.y < 10) {
+        //         this.y += 10;
+        //         this.display();
+        //     }
+        //     else if(s1.y - this.y < 10) {
+        //         this.y -= 10;
+        //         this.display();
+        //     }
+        // }
+        // for(Soldier s1 : red.soldiers) {
+        //     if(this.x - s.x < 10) {
+        //         this.x += 10;
+        //         this.display();
+        //     }
+        //     else if(s1.x - this.x < 10) {
+        //         this.x -= 10;
+        //         this.display();
+        //     }
+        //     if(this.y - s1.y < 10) {
+        //         this.y += 10;
+        //         this.display();
+        //     }
+        //     else if(s1.y - this.y < 10) {
+        //         this.y -= 10;
+        //         this.display();
+        //     }
+        // }
         // pathfinding algorithm is split into two parts.
         // Establishing direction (this part below)
         // and movement (done by move())
@@ -133,25 +198,25 @@ class Soldier {
         // If it's negative the target is behind.
         // If either difference of X or Y is zero, the target is on one of the cardinal directions
         // north (0, +y), south (0, -y), east (+x, 0), or west(-x, 0)
-        float deltaX = (s.x - this.x);
-        if (deltaX < 0) {
-            deltaX = -1;
+        this.deltaX = (s.x - this.x);
+        if (this.deltaX < 0) {
+            this.deltaX = -1;
         }
-        else if (deltaX > 0) {
-            deltaX = 1;
-        }
-        else {
-            deltaX = 0;
-        }
-        float deltaY = (s.y - this.y);
-        if (deltaY < 0) {
-            deltaY = -1;
-        }
-        else if (deltaY > 0) {
-            deltaY = 1;
+        else if (this.deltaX > 0) {
+            this.deltaX = 1;
         }
         else {
-            deltaY = 0;
+            this.deltaX = 0;
+        }
+        this.deltaY = (s.y - this.y);
+        if (this.deltaY < 0) {
+            this.deltaY = -1;
+        }
+        else if (this.deltaY > 0) {
+            this.deltaY = 1;
+        }
+        else {
+            this.deltaY = 0;
         }
         
         // Clear fill colour to avoid drawing persistent trails.
@@ -163,7 +228,7 @@ class Soldier {
         // Move towards the enemy if detected (via this.sight)
         // attack if in range
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
-            this.move(deltaX*this.speed, deltaY*this.speed);
+            this.move(this.deltaX*this.speed, this.deltaY*this.speed);
             if(dist(this.x, this.y, s.x, s.y) <= 10) { // TODO: replace this with field
                 this.attack();
             }
@@ -179,14 +244,21 @@ class Soldier {
                 this.takeDamage(s.projectile);
             }
         }
-        // reverse direction if the unit is going out of bounds
-        if(this.x <= 0 || this.x >= 1000 || this.y <= 0 || this.y >= 1000) {
-            deltaX *= -1;
-            deltaY *= -1;
-        }
 
         if(this.target != null) {
             this.deathCheck();
+        }
+        if(this.x >= 1000) {
+            this.deltaX = -1;
+            while(this.x >= 500) {
+                this.move(this.deltaX*this.speed, 0);
+            }
+        }
+        else if(this.x <= 0) {
+            this.deltaX = 1;
+            while(this.x <= 500) {
+                this.move(this.deltaX*this.speed, 0);
+            }
         }
     }
 

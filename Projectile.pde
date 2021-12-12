@@ -43,6 +43,11 @@ class Projectile {
             this.fired = false;
             this.gone = false;
             this.resetShotFlag = false;
+            this.x = s.x;
+            this.y = s.y;
+        }
+        if(this.fired) {
+            return;
         }
         if(this.gone) {
             return;

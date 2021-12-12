@@ -1,4 +1,5 @@
 PImage mudTerrain, grassTerrain;
+boolean play = false;
 int alpha = 128;
 int fireRateCount = 45;
 color teamRed = color(255, 0, 0), teamBlue = color(0, 0, 255), linf = color(255, 255, 0), hinf = color(128, 128, 0),
@@ -11,7 +12,7 @@ LightCavalrySoldier tester2 = new LightCavalrySoldier("Blue", linf, teamBlue, 80
 Soldier tester3 = new Soldier("Artillery", "Blue", hart, teamBlue, 1000, cannonShell, 10, 400, 400);
 
 Army blue = new Army("Blue Army", teamBlue);
-
+Army red = new Army("Red Army", teamRed);
 void setup() {
   size(1000, 1000);
   mudTerrain = loadImage("muddy.png");
@@ -22,13 +23,47 @@ void setup() {
   tester2.display();
   tester3.display();
 
+  blue.addWave(2, 2, 2, 2, 2, 2, 2, 200);
+  for(Soldier s : blue.soldiers) {
+    s.display();
+  }
+
+  red.addWave(1, 1, 1, 1, 1, 1, 1, 800);
+  for(Soldier s : red.soldiers) {
+    s.display();
+  }
+
 }
 
 void draw() {
-    image(grassTerrain, 0, 0);
-    tester.pathfind(tester2);
-    tester2.pathfind(tester);
-    tester3.pathfind(tester);
+  // TODO: fix "rubberbanding" visual bug
+  image(grassTerrain, 0, 0);
+  red.checkDeaths();
+  blue.checkDeaths();
+  tester.pathfind(tester2);
+  tester2.pathfind(tester);
+  tester3.pathfind(tester);
+  for(Soldier s : blue.soldiers) {
+    for(Soldier s1 : red.soldiers) {
+      if(dist(s.x, s.y, s1.x, s1.y) <= s.sight) {
+        s.target = s1;
+        break;
+      }
+    }
+    if(!(s.target == null))
+      s.pathfind(s.target);
+  }
+  for(Soldier s : red.soldiers) {
+    for(Soldier s1 : blue.soldiers) {
+      if(dist(s.x, s.y, s1.x, s1.y) <= s.sight) {
+        s.target = s1;
+        break;
+      }
+    }
+    if(!(s.target == null))
+      s.pathfind(s.target);
+  }
+  if(tester.alive) {
     if(tester.attacked) {
       fireRateCount--;
       if(fireRateCount == 0) {
@@ -40,6 +75,19 @@ void draw() {
         fireRateCount = 45;
       }
     }
-    
-    //one.shoot(tester);
+  }
+  //one.shoot(tester);
+}
+
+void keyPressed() {
+  if(key == 'r') {
+    if(play) {
+      loop();
+      play = false;
+    }
+    else {
+      noLoop();
+      play = true;
+    }
+  }
 }

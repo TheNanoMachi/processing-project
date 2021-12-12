@@ -16,6 +16,20 @@ class LightCavalrySoldier extends Soldier {
         stroke(this.teamColour);
         strokeWeight(5);
         circle(this.x, this.y, 30);
+        if(this.teamColour == teamBlue) {
+            for(Soldier s : red.soldiers) {
+                if(dist(this.x, this.y, s.x, s.y) <= 30) {
+                    s.die();
+                }
+            }
+        }
+        else {
+            for(Soldier s : blue.soldiers) {
+                if(dist(this.x, this.y, s.x, s.y) <= 30) {
+                    s.die();
+                }
+            }
+        }
     }
 
     
