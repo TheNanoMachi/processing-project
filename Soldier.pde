@@ -127,63 +127,58 @@ class Soldier {
         this.target = s;
         // if there is no target, move east as if the unit's target is out of sight
         if(!this.target.alive) {
-            // if(this.x >= 1000) {
-            //     this.x = 10;
-            // }
-            // else if(this.x <= 0) {
-            //     this.x = 990;
-            // }
-            if(this.x >= 1000) {
-                this.deltaX = -1;
-                while(this.x >= 500) {
-                    this.move(this.deltaX*this.speed, 0);
-                }
+            if(this.x <= 20) {
+                this.deltaX = 20;
+                this.deltaY = 0;
             }
-            else if(this.x <= 0) {
-                this.deltaX = 1;
-                while(this.x <= 500) {
-                    this.move(this.deltaX*this.speed, 0);
-                }
+            else if(this.x >= 990) {
+                this.deltaX = -20;
+                this.deltaY = 0;
             }
-            else {
-                this.move(this.speed, 0);
+            if((this.y <= 20)) {
+                this.deltaX = 0;
+                this.deltaY = 20;
+            }
+            else if(this.y >= 990) {
+                this.deltaX = 0;
+                this.deltaY = -20;
             }
             return;
         }
 
         // for(Soldier s1 : blue.soldiers) {
         //     if(this.x - s1.x < 10) {
-        //         this.x += 10;
+        //         this.x = s1.x + 10;
         //         this.display();
         //     }
         //     else if(s1.x - this.x < 10) {
-        //         this.x -= 10;
+        //         this.x = s1.x - 10;
         //         this.display();
         //     }
         //     if(this.y - s1.y < 10) {
-        //         this.y += 10;
+        //         this.y = s1.y + 10;
         //         this.display();
         //     }
         //     else if(s1.y - this.y < 10) {
-        //         this.y -= 10;
+        //         this.y = s1.y - 10;
         //         this.display();
         //     }
         // }
         // for(Soldier s1 : red.soldiers) {
-        //     if(this.x - s.x < 10) {
-        //         this.x += 10;
+        //     if(this.x - s1.x < 10) {
+        //         this.x = s1.x + 10;
         //         this.display();
         //     }
         //     else if(s1.x - this.x < 10) {
-        //         this.x -= 10;
+        //         this.x = s1.x - 10;
         //         this.display();
         //     }
         //     if(this.y - s1.y < 10) {
-        //         this.y += 10;
+        //         this.y = s1.y + 10;
         //         this.display();
         //     }
         //     else if(s1.y - this.y < 10) {
-        //         this.y -= 10;
+        //         this.y = s1.y - 10;
         //         this.display();
         //     }
         // }
@@ -198,25 +193,45 @@ class Soldier {
         // If it's negative the target is behind.
         // If either difference of X or Y is zero, the target is on one of the cardinal directions
         // north (0, +y), south (0, -y), east (+x, 0), or west(-x, 0)
-        this.deltaX = (s.x - this.x);
-        if (this.deltaX < 0) {
-            this.deltaX = -1;
-        }
-        else if (this.deltaX > 0) {
-            this.deltaX = 1;
+        if (!((this.x <= 10) || (this.x >= 990) || (this.y <= 10) || (this.y >= 990))) {
+            this.deltaX = (s.x - this.x);
+            if (this.deltaX < 0) {
+                this.deltaX = -1;
+            }
+            else if (this.deltaX > 0) {
+                this.deltaX = 1;
+            }
+            else {
+                this.deltaX = 0;
+            }
+            this.deltaY = (s.y - this.y);
+            if (this.deltaY < 0) {
+                this.deltaY = -1;
+            }
+            else if (this.deltaY > 0) {
+                this.deltaY = 1;
+            }
+            else {
+                this.deltaY = 0;
+            }
         }
         else {
-            this.deltaX = 0;
-        }
-        this.deltaY = (s.y - this.y);
-        if (this.deltaY < 0) {
-            this.deltaY = -1;
-        }
-        else if (this.deltaY > 0) {
-            this.deltaY = 1;
-        }
-        else {
-            this.deltaY = 0;
+            if(this.x <= 10) {
+                this.deltaX = 5;
+                this.deltaY = 0;
+            }
+            else if(this.x >= 990) {
+                this.deltaX = -5;
+                this.deltaY = 0;
+            }
+            if((this.y <= 10)) {
+                this.deltaX = 0;
+                this.deltaY = 5;
+            }
+            else if(this.y >= 990) {
+                this.deltaX = 0;
+                this.deltaY = -5;
+            }
         }
         
         // Clear fill colour to avoid drawing persistent trails.
@@ -235,7 +250,7 @@ class Soldier {
         }
         // otherwise, default to moving east
         else {
-            this.move(this.speed, 0);
+            this.move(deltaX*this.speed, 0);
         }
         // if the enemy has a projectile
         // take damage from it
@@ -248,18 +263,18 @@ class Soldier {
         if(this.target != null) {
             this.deathCheck();
         }
-        if(this.x >= 1000) {
-            this.deltaX = -1;
-            while(this.x >= 500) {
-                this.move(this.deltaX*this.speed, 0);
-            }
-        }
-        else if(this.x <= 0) {
-            this.deltaX = 1;
-            while(this.x <= 500) {
-                this.move(this.deltaX*this.speed, 0);
-            }
-        }
+        // if(this.x >= 1000) {
+        //     this.deltaX = -1;
+        //     while(this.x >= 500) {
+        //         this.move(this.deltaX*this.speed, 0);
+        //     }
+        // }
+        // else if(this.x <= 0) {
+        //     this.deltaX = 1;
+        //     while(this.x <= 500) {
+        //         this.move(this.deltaX*this.speed, 0);
+        //     }
+        // }
     }
 
     void attack() {

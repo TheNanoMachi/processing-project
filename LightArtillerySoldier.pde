@@ -13,9 +13,23 @@ class LightArtillerySoldier extends Soldier {
         // set target
         this.target = s;
         // if there is no target, move east as if the unit's target is out of sight
-        if(this.target == null) {
-            println("no more target");
-            this.move(this.speed, 0);
+        if(!this.target.alive) {
+            if(this.x <= 20) {
+                this.deltaX = 5;
+                this.deltaY = 0;
+            }
+            else if(this.x >= 990) {
+                this.deltaX = -5;
+                this.deltaY = 0;
+            }
+            if((this.y <= 20)) {
+                this.deltaX = 0;
+                this.deltaY = 5;
+            }
+            else if(this.y >= 990) {
+                this.deltaX = 0;
+                this.deltaY = -5;
+            }
             return;
         }
         // pathfinding algorithm is split into two parts.
@@ -29,25 +43,45 @@ class LightArtillerySoldier extends Soldier {
         // If it's negative the target is behind.
         // If either difference of X or Y is zero, the target is on one of the cardinal directions
         // north (0, +y), south (0, -y), east (+x, 0), or west(-x, 0)
-        float deltaX = (s.x - this.x);
-        if (deltaX < 0) {
-            deltaX = -1;
-        }
-        else if (deltaX > 0) {
-            deltaX = 1;
+        if (!((this.x <= 10) || (this.x >= 990) || (this.y <= 10) || (this.y >= 990))) {
+            this.deltaX = (s.x - this.x);
+            if (this.deltaX < 0) {
+                this.deltaX = -1;
+            }
+            else if (this.deltaX > 0) {
+                this.deltaX = 1;
+            }
+            else {
+                this.deltaX = 0;
+            }
+            this.deltaY = (s.y - this.y);
+            if (this.deltaY < 0) {
+                this.deltaY = -1;
+            }
+            else if (this.deltaY > 0) {
+                this.deltaY = 1;
+            }
+            else {
+                this.deltaY = 0;
+            }
         }
         else {
-            deltaX = 0;
-        }
-        float deltaY = (s.y - this.y);
-        if (deltaY < 0) {
-            deltaY = -1;
-        }
-        else if (deltaY > 0) {
-            deltaY = 1;
-        }
-        else {
-            deltaY = 0;
+            if(this.x <= 10) {
+                this.deltaX = 5;
+                this.deltaY = 0;
+            }
+            else if(this.x >= 990) {
+                this.deltaX = -5;
+                this.deltaY = 0;
+            }
+            if((this.y <= 10)) {
+                this.deltaX = 0;
+                this.deltaY = 5;
+            }
+            else if(this.y >= 990) {
+                this.deltaX = 0;
+                this.deltaY = -5;
+            }
         }
         
         // Clear fill colour to avoid drawing persistent trails.
@@ -55,13 +89,13 @@ class LightArtillerySoldier extends Soldier {
         strokeWeight(2);
         fill(0, 0, 0, 0);
 
-        // Artillery units move only if they cannot see the enemy.
+        //Artillery units should not move if the target is in sight.
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
             this.attack();
         }
-        // Move if target not in range/no target.
+        // otherwise, default to moving east
         else {
-            this.move(this.speed, 0);
+            this.move(deltaX*this.speed, 0);
         }
         // if the enemy has a projectile
         // take damage from it
@@ -69,11 +103,6 @@ class LightArtillerySoldier extends Soldier {
             if(abs(this.x - abs(s.projectile.x)) <= s.projectile.deltaX * s.projectile.speed && abs(this.y - abs(s.projectile.y)) <= s.projectile.deltaY * s.projectile.speed) {
                 this.takeDamage(s.projectile);
             }
-        }
-        // reverse direction if the unit is going out of bounds
-        if(this.x <= 0 || this.x >= 1000 || this.y <= 0 || this.y >= 1000) {
-            deltaX *= -1;
-            deltaY *= -1;
         }
 
         if(this.target != null) {
@@ -84,6 +113,9 @@ class LightArtillerySoldier extends Soldier {
     
     void attack(Soldier target) {
         // fire projectile
+        if(!this.alive) {
+            return;
+        }
         this.projectile.shoot(this, target);
     }
 }

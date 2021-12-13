@@ -13,7 +13,26 @@ class SoldierSniper extends Soldier {
 
     @Override
     void pathfind(Soldier s) {
-        if(!alive) {
+        if(!this.alive) {
+            return;
+        }
+        if(!this.target.alive) {
+            if(this.x <= 20) {
+                this.deltaX = 5;
+                this.deltaY = 0;
+            }
+            else if(this.x >= 990) {
+                this.deltaX = -5;
+                this.deltaY = 0;
+            }
+            if((this.y <= 20)) {
+                this.deltaX = 0;
+                this.deltaY = 5;
+            }
+            else if(this.y >= 990) {
+                this.deltaX = 0;
+                this.deltaY = -5;
+            }
             return;
         }
         this.target = s;
@@ -58,7 +77,7 @@ class SoldierSniper extends Soldier {
             this.running = true;
             this.runAway();
         }
-        if(dist(this.x, this.y, s.x, s.y) <= 20) {
+        if(dist(this.x, this.y, s.x, s.y) <= 20 && s.projectile == null) {
             this.takeDamage();
         } 
 

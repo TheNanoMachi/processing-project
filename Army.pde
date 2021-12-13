@@ -1,4 +1,3 @@
-import java.util.ConcurrentModificationException;
 class Army {
   ArrayList<Soldier> soldiers;
   String name;
@@ -15,7 +14,7 @@ class Army {
   }
 
   void addWave(int compLInf, int compHInf, int compLCav, int compHCav, int compLArt, int compHArt, int compLRInf, int spawnX) {
-    int spawnY = 500;
+    int spawnY = 100;
     for(int i = 0; i < compLInf; i++) {
       // TODO: Make spawing zones, add different projectiles
       LightInfantrySoldier temp = new LightInfantrySoldier("Blue", linf, team, one, spawnX, spawnY);
@@ -56,5 +55,14 @@ class Army {
 
   void checkDeaths() {
     this.soldiers.removeIf(s -> !s.alive);
+  }
+
+  void cullSoldiers() {
+    // remove soldiers that are too far away
+    for(Soldier s : this.soldiers) {
+      if(s.x <= 0 || s.x >= 1000 || s.y <= 0 || s.y >= 1000) {
+        s.die();
+      }
+    }
   }
 }
