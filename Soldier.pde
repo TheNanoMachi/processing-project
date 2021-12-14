@@ -98,7 +98,7 @@ class Soldier {
 
         fill(this.typeColour);
 
-        circle(this.x, this.y, 10);
+        circle(this.x, this.y, 15);
 
         // or as a square with width and height 10
 

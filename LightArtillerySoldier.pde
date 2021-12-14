@@ -1,5 +1,5 @@
 class LightArtillerySoldier extends Soldier {
-    LightArtillerySoldier(String team, color typeC, color teamC, Projectile artProj, float x, float y) {
+    LightArtillerySoldier(String team, color typeC, color teamC, ArtilleryProjectile artProj, float x, float y) {
         super("Light Artillery", team, typeC, teamC, 600, artProj, 4, x, y);
     }
 
@@ -113,7 +113,7 @@ class LightArtillerySoldier extends Soldier {
     
     void attack(Soldier target) {
         // fire projectile
-        if(!this.alive) {
+        if(!this.alive || !this.target.alive) {
             return;
         }
         this.projectile.shoot(this, target);

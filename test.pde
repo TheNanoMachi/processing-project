@@ -39,8 +39,8 @@ void draw() {
   // TODO: fix "rubberbanding" visual bug
   image(grassTerrain, 0, 0);
   println("red", red.soldiers.size(), "blue", blue.soldiers.size());
-  red.checkDeaths();
-  blue.checkDeaths();
+  red.checkDeaths2();
+  blue.checkDeaths2();
   // tester.pathfind(tester2);
   // tester2.pathfind(tester);
   // tester3.pathfind(tester);
