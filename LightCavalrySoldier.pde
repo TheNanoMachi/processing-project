@@ -1,9 +1,9 @@
 class LightCavalrySoldier extends Soldier {
     LightCavalrySoldier(String team, color typeC, color teamC) {
-        super("Light Cavalry", team, typeC, teamC, 500, 10, 0, 0);
+        super("Light Cavalry", team, typeC, teamC, 500, 2, 0, 0);
     }
     LightCavalrySoldier(String team, color typeC, color teamC, float x, float y) {
-        super("Light Cavalry", team, typeC, teamC, 500, null, 10, x, y);
+        super("Light Cavalry", team, typeC, teamC, 500, null, 2, x, y);
     }
 
     @Override
@@ -15,18 +15,18 @@ class LightCavalrySoldier extends Soldier {
         fill(0, 0, 0, 0);
         stroke(this.teamColour);
         strokeWeight(5);
-        circle(this.x, this.y, 30);
+        circle(this.x, this.y, 40);
         if(this.teamColour == teamBlue) {
             for(Soldier s : red.soldiers) {
-                if(dist(this.x, this.y, s.x, s.y) <= 30) {
-                    s.die();
+                if(dist(this.x, this.y, s.x, s.y) <= 40) {
+                    s.vitality -= 5;
                 }
             }
         }
         else {
             for(Soldier s : blue.soldiers) {
-                if(dist(this.x, this.y, s.x, s.y) <= 30) {
-                    s.die();
+                if(dist(this.x, this.y, s.x, s.y) <= 40) {
+                    s.vitality -= 5;
                 }
             }
         }

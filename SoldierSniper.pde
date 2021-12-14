@@ -1,12 +1,12 @@
 class SoldierSniper extends Soldier {
     boolean attacked, running;
     SoldierSniper(String team, color typeC, color teamC, Sniper_Projectile sniperProj) {
-        super("Sniper", team, typeC, teamC, 500, sniperProj, 5);
+        super("Sniper", team, typeC, teamC, 500, sniperProj, 1);
         attacked = false;
         running = false;
     }
     SoldierSniper(String team, color typeC, color teamC, Sniper_Projectile sniperProj, float x, float y) {
-        super("Sniper", team, typeC, teamC, 500, sniperProj, 5, x, y);
+        super("Sniper", team, typeC, teamC, 500, sniperProj, 1, x, y);
         attacked = false;
         running = false;
     }
@@ -63,11 +63,13 @@ class SoldierSniper extends Soldier {
         //circle(this.x, this.y, this.sight*2);
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
             //line(this.x, this.y, s.x, s.y);
-            if(!this.running) {
-                // move away if target is within 50 pixels of the unit
-                this.move(-deltaX*this.speed, -deltaY*this.speed);
-                this.attacked = true;
-            }
+            // if(this.running) {
+            //     // move away if target is within 50 pixels of the unit
+            //     //this.move(-deltaX*this.speed, -deltaY*this.speed);
+            //     this.attacked = true;
+            // }
+
+            this.move(deltaX*this.speed, deltaY*this.speed);
 
         }
         else {

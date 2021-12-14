@@ -1,5 +1,6 @@
-PImage mudTerrain, grassTerrain;
-boolean play = false;
+PImage mudTerrain, grassTerrain;  //Possible terrains
+
+boolean play = false;  //Determines if the simulation is paused or not
 int alpha = 128;
 int fireRateCount = 45;
 int timeUntilNextWave = 120;
@@ -86,8 +87,8 @@ void draw() {
 
   timeUntilNextWave--;
   if(timeUntilNextWave == 0) {
-    blue.addWave(30, 30, 30, 30, 30, 30, 30, 200);
-    red.addWave(30, 30, 30, 30, 30, 30, 30, 800);
+    blue.addWave(5, 5, 5, 5, 5, 5, 5, 200);
+    red.addWave(5, 5, 5, 5, 5, 5, 5, 800);
     timeUntilNextWave = 120;
   }
 

@@ -1,6 +1,6 @@
 class LightArtillerySoldier extends Soldier {
     LightArtillerySoldier(String team, color typeC, color teamC, ArtilleryProjectile artProj, float x, float y) {
-        super("Light Artillery", team, typeC, teamC, 600, artProj, 4, x, y);
+        super("Light Artillery", team, typeC, teamC, 600, artProj, 1, x, y);
     }
 
     @Override
