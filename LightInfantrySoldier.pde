@@ -1,6 +1,10 @@
 class LightInfantrySoldier extends Soldier {
     LightInfantrySoldier(String team, color typeC, color teamC, Projectile infProj, float x, float y) {
-        super("Light Infantry", team, typeC, teamC, 600, infProj, 1.5, x, y);
+        super("Light Infantry", team, typeC, teamC, 100, infProj, 1.5, x, y);
+        this.vitality = 10;
+        this.damage = 10;
+        this.damageMin = -2;
+        this.damageMax = 2;
     }
 
     @Override
@@ -16,14 +20,14 @@ class LightInfantrySoldier extends Soldier {
         if(this.teamColour == teamBlue) {
             for(Soldier s : red.soldiers) {
                 if(dist(this.x, this.y, s.x, s.y) <= 40) {
-                    s.vitality -= 5;
+                    s.takeDamage(this);
                 }
             }
         }
         else {
             for(Soldier s : blue.soldiers) {
                 if(dist(this.x, this.y, s.x, s.y) <= 40) {
-                    s.vitality -= 5;
+                    s.takeDamage(this);
                 }
             }
         }

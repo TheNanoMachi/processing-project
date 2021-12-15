@@ -59,10 +59,9 @@ class Projectile {
             this.y = s.y;
             this.targetX = target.x;
             this.targetY = target.y;
-            println("working");
+
             fired = true; 
         }
-
         deltaX = (targetX - this.x);
         if (deltaX < 0) {
             deltaX = -1;
@@ -83,11 +82,8 @@ class Projectile {
         else {
             deltaY = 0;
         }
-
-        println(deltaX, deltaY, this.x, this.y, targetX, targetY);
         this.move(deltaX*this.speed, deltaY*this.speed);
         if(this.x - targetX <= 5 && this.y - targetY <= 5) {
-            println("gone");
             gone = true;
         }
         
@@ -100,7 +96,7 @@ class Projectile {
         this.x += xMag;
         this.y += yMag;
         stroke(colour);
-        line(this.x, this.y, this.x+(deltaX*50), this.y+(deltaY*50));
+        circle(this.x, this.y, 50);
     }
 
 }

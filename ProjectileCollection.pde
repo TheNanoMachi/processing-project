@@ -4,19 +4,9 @@ class ProjectileCollection {
     ProjectileCollection() {
         this.projectiles = new ArrayList<Projectile>();
     }
-
-    void cullProjectile() {
-        // Simple implementation using the removeIf function.
-        // May not work on Processing 3.5.
-        this.projectiles.removeIf(p -> p.gone);
-    }
-
     void cullProjectile2() {
-        // If the original cullProjectile() function doesn't work
-        // it's probably because of the lambda function which doesn't seem
-        // to be supported in Processing 3.5. This implementation is probably
-        // less efficient and definitely longer, but
-        // it works in Processing 3.5.
+        // Lambda functions aren't supported in processing 3.5 so this implementation is used instead.
+        // Removes projectiles that have hit their target and are now gone.
 
         ArrayList<Projectile> temp = new ArrayList<Projectile>();
         for(Projectile p : this.projectiles) {

@@ -2,6 +2,7 @@ class ArtilleryProjectile extends Projectile {
     float aoeRange;
     ArtilleryProjectile(float spread, color colour, float x, float y, float area) {
         super(10, spread, colour, x, y, "Artillery");
+        this.damage = 30;
         aoeRange = area;
     }
 

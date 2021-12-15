@@ -15,6 +15,7 @@ class Soldier {
     float armour;
     boolean alive;
     float deltaX, deltaY;
+    float damage, damageMax, damageMin;
 
     Soldier(String type, String team, color typeC, color teamC, int sight, Projectile proj) {
         this.type = type;
@@ -32,6 +33,9 @@ class Soldier {
         this.alive = true;
         this.deltaX = 0;
         this.deltaY = 0;
+        this.damage = 10;
+        this.damageMax = 3;
+        this.damageMin = -3;
     }
     Soldier(String type, String team, color typeC, color teamC, int sight, Projectile proj, float speed) {
         this.type = type;
@@ -49,6 +53,9 @@ class Soldier {
         this.alive = true;
         this.deltaX = 0;
         this.deltaY = 0;
+        this.damage = 10;
+        this.damageMax = 3;
+        this.damageMin = -3;
     }
     Soldier(String type, String team, color typeC, color teamC, int sight, Projectile proj, float speed, float x, float y) {
         this.type = type;
@@ -66,6 +73,9 @@ class Soldier {
         this.alive = true;
         this.deltaX = 0;
         this.deltaY = 0;
+        this.damage = 10;
+        this.damageMax = 3;
+        this.damageMin = -3;
     }
     Soldier(String type, String team, color typeC, color teamC, int sight, float speed, float x, float y) {
         this.type = type;
@@ -82,6 +92,9 @@ class Soldier {
         this.alive = true;
         this.deltaX = 0;
         this.deltaY = 0;
+        this.damage = 10;
+        this.damageMax = 3;
+        this.damageMin = -3;
     }
 
     void display() {
@@ -145,43 +158,6 @@ class Soldier {
             }
             return;
         }
-
-        // for(Soldier s1 : blue.soldiers) {
-        //     if(this.x - s1.x < 10) {
-        //         this.x = s1.x + 10;
-        //         this.display();
-        //     }
-        //     else if(s1.x - this.x < 10) {
-        //         this.x = s1.x - 10;
-        //         this.display();
-        //     }
-        //     if(this.y - s1.y < 10) {
-        //         this.y = s1.y + 10;
-        //         this.display();
-        //     }
-        //     else if(s1.y - this.y < 10) {
-        //         this.y = s1.y - 10;
-        //         this.display();
-        //     }
-        // }
-        // for(Soldier s1 : red.soldiers) {
-        //     if(this.x - s1.x < 10) {
-        //         this.x = s1.x + 10;
-        //         this.display();
-        //     }
-        //     else if(s1.x - this.x < 10) {
-        //         this.x = s1.x - 10;
-        //         this.display();
-        //     }
-        //     if(this.y - s1.y < 10) {
-        //         this.y = s1.y + 10;
-        //         this.display();
-        //     }
-        //     else if(s1.y - this.y < 10) {
-        //         this.y = s1.y - 10;
-        //         this.display();
-        //     }
-        // }
         // pathfinding algorithm is split into two parts.
         // Establishing direction (this part below)
         // and movement (done by move())
@@ -243,6 +219,8 @@ class Soldier {
         // Move towards the enemy if detected (via this.sight)
         // attack if in range
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
+            // fill(this.teamColour);
+            // line(this.x, this.y, this.target.x, this.target.y);
             this.move(this.deltaX*this.speed, this.deltaY*this.speed);
             if(dist(this.x, this.y, s.x, s.y) <= 10) { // TODO: replace this with field
                 this.attack();
@@ -250,7 +228,21 @@ class Soldier {
         }
         // otherwise, default to moving east
         else {
-            this.move(deltaX*this.speed, 0);
+            if(this.teamColour == teamBlue) {
+                this.move(deltaX*this.speed, 0);
+            }
+            else {
+                this.move(-deltaX*this.speed, 0);
+            }
+        }
+        // if no target, default to moving east as well, or west for red team
+        if(this.target == null) {
+            if(this.teamColour == teamBlue) {
+                this.move(deltaX*this.speed, 0);
+            }
+            else {
+                this.move(-deltaX*this.speed, 0);
+            }
         }
         // if the enemy has a projectile
         // take damage from it
@@ -275,6 +267,7 @@ class Soldier {
         //         this.move(this.deltaX*this.speed, 0);
         //     }
         // }
+        this.display();
     }
 
     void attack() {
@@ -291,7 +284,16 @@ class Soldier {
 
     void die() {
         // very simple death function
+        if(!this.alive) {
+            return;
+        }
         this.alive = false;
+        if(this.teamColour == teamRed) {
+            redCasualties++;
+        }
+        else {
+            blueCasualties++;
+        }
     }
 
     void takeDamage(Projectile p) {
@@ -302,8 +304,22 @@ class Soldier {
         }
     }
 
-    void takeDamage() {
-        this.vitality -= 10;
+    void takeDamage(Projectile p, boolean inRange) {
+        // overloaded function for artillery only.
+        if(inRange) {
+            this.vitality -= p.damage;
+        }
+        else {
+            this.vitality -= p.damage / 2;
+        }
+        if(this.vitality <= 0) {
+            this.die();
+        }
+    }
+
+    void takeDamage(Soldier s) {
+        // Randomizes damage by randomMin, randomMax
+        this.vitality -= s.damage + random(s.damageMin, s.damageMax);
         if(this.vitality <= 0) {
             this.die();
         }

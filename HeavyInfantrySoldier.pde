@@ -1,7 +1,10 @@
 class HeavyInfantrySoldier extends Soldier {
     HeavyInfantrySoldier(String team, color typeC, color teamC, Projectile infProj, float x, float y) {
-        super("Heavy Infantry", team, typeC, teamC, 600, infProj, 1, x, y);
+        super("Heavy Infantry", team, typeC, teamC, 100, infProj, 1, x, y);
         this.vitality = 20;
+        this.damage = 20;
+        this.damageMin = -5;
+        this.damageMax = 5;
     }
 
     @Override
@@ -17,14 +20,14 @@ class HeavyInfantrySoldier extends Soldier {
         if(this.teamColour == teamBlue) {
             for(Soldier s : red.soldiers) {
                 if(dist(this.x, this.y, s.x, s.y) <= 40) {
-                    s.vitality -= 10;
+                    s.takeDamage(this);
                 }
             }
         }
         else {
             for(Soldier s : blue.soldiers) {
                 if(dist(this.x, this.y, s.x, s.y) <= 40) {
-                    s.vitality -= 10;
+                    s.takeDamage(this);
                 }
             }
         }

@@ -1,5 +1,6 @@
 class SoldierSniper extends Soldier {
     boolean attacked, running;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     SoldierSniper(String team, color typeC, color teamC, Sniper_Projectile sniperProj) {
         super("Sniper", team, typeC, teamC, 500, sniperProj, 1);
         attacked = false;
@@ -69,22 +70,23 @@ class SoldierSniper extends Soldier {
             //     this.attacked = true;
             // }
 
-            this.move(deltaX*this.speed, deltaY*this.speed);
+            
+            if(dist(this.x, this.y, s.x, s.y) <= 300) {
+                this.attack(s);
+            }
+            else {
+                this.move(deltaX*this.speed, deltaY*this.speed);
+            }
 
         }
         else {
             this.move(this.speed, 0);
         }
-        if(dist(this.x, this.y, s.x, s.y) <= 50) {
-            this.running = true;
-            this.runAway();
-        }
-        if(dist(this.x, this.y, s.x, s.y) <= 20 && s.projectile == null) {
-            this.takeDamage();
-        } 
+        
 
         if(this.target != null)
             this.deathCheck();
+        this.display();
     }
 
     void attack(Soldier target) {
@@ -92,6 +94,34 @@ class SoldierSniper extends Soldier {
         if(!this.alive) {
             return;
         }
-        this.projectile.shoot(this, target);
+        final Runnable attack = new Runnable() {
+            public void run() {
+                if(!alive) {
+                    return;
+                }
+                fill(255);
+                line(x, y, target.x, target.y);
+                Sniper_Projectile temp = new Sniper_Projectile(0, color(255), x, y);
+                if(teamColour == teamRed) {
+                    for(Soldier s : blue.soldiers) {
+                        if(s.x == target.x && s.y == target.y) {
+                            s.takeDamage(temp);
+                        }
+                    }
+                }
+                else {
+                    for(Soldier s : red.soldiers) {
+                        if(s.x == target.x && s.y == target.y) {
+                            s.takeDamage(temp);
+                        }
+                    }
+                }
+                projectile.shoot(new SoldierSniper(team, typeColour, teamColour, temp, x, y), target);
+            }
+        };
+        final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, 1, 1, SECONDS);
+        scheduler.schedule(new Runnable() {public void run() {attackHandle.cancel(true);}}, 1, SECONDS);
     }
+
+    
 }

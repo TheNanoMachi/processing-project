@@ -1,8 +1,34 @@
 class HeavyArtillerySoldier extends Soldier {
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     HeavyArtillerySoldier(String team, color typeC, color teamC, ArtilleryProjectile artProj, float x, float y) {
         // String type, String team, color typeC,
         // color teamC, int sight, Projectile proj, float speed, float x, float y
-        super("Heavy Artillery", team, typeC, teamC, 600, artProj, 0.5, x, y);
+        super("Heavy Artillery", team, typeC, teamC, 200, artProj, 0.5, x, y);
+    }
+
+    @Override
+    void display() {
+        // Do not draw the soldier if it is dead.
+        if(!this.alive) {
+            return;
+        }
+
+        // Draw the soldier as a circle with radius 5
+        stroke(this.teamColour);
+
+        strokeWeight(3);
+
+        fill(this.typeColour);
+
+        square(this.x, this.y, 15);
+
+        // or as a square with width and height 10
+
+        // if(this.drawSquare) {
+        //     noStroke();
+        //     fill(this.teamColour, this.alpha);
+        //     square(this.x, this.y, 10);
+        // }
     }
 
     @Override
@@ -99,6 +125,7 @@ class HeavyArtillerySoldier extends Soldier {
         if(this.target != null) {
             this.deathCheck();
         }
+        this.display();
     }
 
     void attack(Soldier target) {
@@ -106,7 +133,40 @@ class HeavyArtillerySoldier extends Soldier {
         if(!this.alive) {
             return;
         }
-        this.projectile.shoot(this, target);
+        final Runnable attack = new Runnable() {
+            public void run() {
+                if(!alive) {
+                    return;
+                }
+                fill(0, 255, 255, 128);
+                
+                ArtilleryProjectile temp = new ArtilleryProjectile(0, color(255), x, y, 60);
+                circle(target.x, target.y, temp.aoeRange);
+                if(teamColour == teamRed) {
+                    for(Soldier s : blue.soldiers) {
+                        if(dist(x, y, s.x, s.y) <= temp.aoeRange / 2) {
+                            s.takeDamage(temp, true);
+                        }
+                        else if(dist(x, y, s.x, s.y) <= temp.aoeRange && dist(x, y, s.x, s.y) >= temp.aoeRange / 2) {
+                            s.takeDamage(temp, false);
+                        }
+                    }
+                }
+                else {
+                    for(Soldier s : red.soldiers) {
+                        if(dist(x, y, s.x, s.y) <= temp.aoeRange / 2) {
+                            s.takeDamage(temp, true);
+                        }
+                        else if(dist(x, y, s.x, s.y) <= temp.aoeRange && dist(x, y, s.x, s.y) >= temp.aoeRange / 2) {
+                            s.takeDamage(temp, false);
+                        }
+                    }
+                }
+                projectile.shoot(new HeavyArtillerySoldier(team, typeColour, teamColour, temp, x, y), target);
+            }
+        };
+        final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, 1, 1, SECONDS);
+        scheduler.schedule(new Runnable() {public void run() {attackHandle.cancel(true);}}, 1, SECONDS);
     }
 
 }
