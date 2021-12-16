@@ -17,6 +17,8 @@ class Soldier {
     float deltaX, deltaY;
     float damage, damageMax, damageMin;
 
+    // tbh I'm too scared to remove these constructors
+
     Soldier(String type, String team, color typeC, color teamC, int sight, Projectile proj) {
         this.type = type;
         this.team = team;
@@ -125,7 +127,7 @@ class Soldier {
         // Move the soldier by a certain x and y value.
         this.display();
         this.x += xMag;
-        this.y += yMag;       
+        this.y += yMag;
     } 
 
     // The method is for melee units. Ranged units will start moving backwards
@@ -139,7 +141,9 @@ class Soldier {
         this.target = s;
         // if there is no target, move east as if the unit's target is out of sight
         if(!this.target.alive) {
+            // if out of bounds (or almost out of bounds), momentarily try to leave
             if(this.x <= 20) {
+                // deltaX or deltaY is set to 5 to accelerate movement.
                 this.deltaX = 20;
                 this.deltaY = 0;
             }
@@ -218,10 +222,8 @@ class Soldier {
         // Move towards the enemy if detected (via this.sight)
         // attack if in range
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
-            // fill(this.teamColour);
-            // line(this.x, this.y, this.target.x, this.target.y);
             this.move(this.deltaX*this.speed, this.deltaY*this.speed);
-            if(dist(this.x, this.y, s.x, s.y) <= 10) { // TODO: replace this with field
+            if(dist(this.x, this.y, s.x, s.y) <= 10) {
                 this.attack();
             }
         }
@@ -269,6 +271,7 @@ class Soldier {
             return;
         }
         this.alive = false;
+        // Add to casualties if dead.
         if(this.teamColour == teamRed) {
             redCasualties++;
         }
@@ -277,6 +280,7 @@ class Soldier {
         }
     }
 
+    // for taking damage from projectiles that are not artillery
     void takeDamage(Projectile p) {
         if(!this.alive) {
             return;
@@ -288,7 +292,7 @@ class Soldier {
         }
     }
 
-    // overloaded function for artillery only.
+    // for taking damage from artillery
     void takeDamage(Projectile p, boolean inRange) {
         if(!this.alive) {
             return;
@@ -305,6 +309,7 @@ class Soldier {
         }
     }
 
+    // For melee units.
     void takeDamage(Soldier s) {
         if(!this.alive) {
             return;
@@ -315,6 +320,7 @@ class Soldier {
             this.die();
         }
     }
+
 
     void deathCheck() {
         // check if target is dead

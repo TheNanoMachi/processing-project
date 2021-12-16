@@ -1,5 +1,6 @@
 class SoldierSniper extends Soldier {
     boolean attacked, running;
+    // create a thread pool for scheduler
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     SoldierSniper(String team, color typeC, color teamC, Sniper_Projectile sniperProj) {
         super("Sniper", team, typeC, teamC, 500, sniperProj, 1);
@@ -15,6 +16,7 @@ class SoldierSniper extends Soldier {
     }
 
     @Override
+    // Snipers move mostly the same as other units
     void pathfind(Soldier s) {
         if(!this.alive) {
             return;
@@ -38,6 +40,7 @@ class SoldierSniper extends Soldier {
             }
             return;
         }
+        // pathfinding is the same as other soldiers
         this.target = s;
         float deltaX = (s.x - this.x);
         if (deltaX < 0) {
@@ -63,10 +66,16 @@ class SoldierSniper extends Soldier {
         stroke(255);
         strokeWeight(2);
         fill(0, 0, 0, 0);
-        //circle(this.x, this.y, this.sight*2);
+        // Snipers attack and move a bit differently.
+        /*
+        Snipers will move only if:
+        - They are not in range of the target (300 pixels) but the target is in sight
+        - or they are not in range or in sight.
+         */
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
             
             if(dist(this.x, this.y, s.x, s.y) <= 300) {
+                // attack if in sight
                 this.attack(s);
             }
             else {
@@ -78,23 +87,24 @@ class SoldierSniper extends Soldier {
             this.move(this.speed, 0);
         }
         
-
+        // check if the target is dead
         if(this.target != null)
             this.deathCheck();
         this.display();
     }
 
     void attack(Soldier target) {
-        // fire projectile
         if(!this.alive) {
             return;
         }
+        // same stuff as Heavy/LightArtillerySoldier basically
         final Runnable attack = new Runnable() {
             public void run() {
                 if(!alive) {
                     return;
                 }
                 Sniper_Projectile temp = new Sniper_Projectile(0, color(255), x, y);
+                // except here, since snipers do point damage instad of area-of-effect
                 if(teamColour == teamRed) {
                     for(Soldier s : blue.soldiers) {
                         if(s.x == target.x && s.y == target.y) {
@@ -116,6 +126,7 @@ class SoldierSniper extends Soldier {
         final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, randomTime, randomTime, MILLISECONDS);
         scheduler.schedule(new Runnable() {public void run() {attackHandle.cancel(true);}}, 1, SECONDS);
         stroke(teamColour, 150);
+        // draw a targeting line.
         line(this.x, this.y, target.x, target.y);
     }
 }

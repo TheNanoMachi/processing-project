@@ -1,4 +1,5 @@
 class HeavyArtillerySoldier extends Soldier {
+    // create a thread pool for scheduler
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     HeavyArtillerySoldier(String team, color typeC, color teamC, ArtilleryProjectile artProj, float x, float y) {
         // String type, String team, color typeC,
@@ -35,8 +36,9 @@ class HeavyArtillerySoldier extends Soldier {
         // if there is no target / the target is dead, move east as if the unit's target is out of sight
         if(!this.target.alive) {
             // If the unit is out of bounds
-            // Try to move away. (Usually this does not succeed.)
+            // Try to move away momentarily.
             if(this.x <= 20) {
+                // deltaX or deltaY is set to 5 to accelerate movement.
                 this.deltaX = 5;
                 this.deltaY = 0;
             }

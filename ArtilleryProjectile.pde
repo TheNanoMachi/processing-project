@@ -3,7 +3,8 @@ class ArtilleryProjectile extends Projectile {
     ArtilleryProjectile(float spread, color colour, float x, float y, float area) {
         super(10, spread, colour, x, y, "Artillery");
         this.damage = 30;
-        aoeRange = area;
+        // set area of effect range
+        this.aoeRange = area;
     }
 
     @Override
@@ -43,6 +44,7 @@ class ArtilleryProjectile extends Projectile {
             deltaY = 0;
         }
         this.move(deltaX*this.speed, deltaY*this.speed);
+        // if the projectile has reached its target, remove it
         if(this.x - targetX <= 5 && this.y - targetY <= 5) {
             gone = true;
         }

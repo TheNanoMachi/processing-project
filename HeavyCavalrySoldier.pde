@@ -8,6 +8,8 @@ class HeavyCavalrySoldier extends Soldier {
     }
 
     @Override
+    // Attack function for heavy cavalry and other melee units
+    // (cavalry and infantry)
     void attack() {
         this.deathCheck();
         if(this.target == null) {
@@ -18,6 +20,8 @@ class HeavyCavalrySoldier extends Soldier {
         strokeWeight(5);
         // Draw the targeting circle (40 pixels). Cosmetic circle used to clarify attacking range.
         circle(this.x, this.y, 40);
+        // check which team the soldier is on, since the attack only affects
+        // the enemy team
         if(this.teamColour == teamBlue) {
             for(Soldier s : red.soldiers) {
                 if(dist(this.x, this.y, s.x, s.y) <= 40) {

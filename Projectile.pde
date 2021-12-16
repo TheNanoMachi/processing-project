@@ -39,7 +39,7 @@ class Projectile {
     }
 
     void shoot(Soldier s, Soldier target) {
-        // Reset certain parts of the projectile if necessary.
+        // Reset certain fields of the projectile if necessary.
         if(this.resetShotFlag) {
             this.fired = false;
             this.gone = false;
@@ -47,6 +47,7 @@ class Projectile {
             this.x = s.x;
             this.y = s.y;
         }
+        // if the projectile no longer needs to be rendered, remove it
         if(this.fired) {
             return;
         }
@@ -86,6 +87,7 @@ class Projectile {
             deltaY = 0;
         }
         this.move(deltaX*this.speed, deltaY*this.speed);
+        // remove the projectile if it has reached its target
         if(this.x - targetX <= 5 && this.y - targetY <= 5) {
             gone = true;
         }

@@ -1,4 +1,5 @@
 class LightArtillerySoldier extends Soldier {
+    // create a thread pool for scheduler
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     LightArtillerySoldier(String team, color typeC, color teamC, ArtilleryProjectile artProj, float x, float y) {
         super("Light Artillery", team, typeC, teamC, 1000, artProj, 1, x, y);
@@ -12,7 +13,7 @@ class LightArtillerySoldier extends Soldier {
             return;
         }
 
-        // Draw the soldier as a circle with radius 5
+        // Draw the soldier as a square of size 15
         stroke(this.teamColour);
 
         strokeWeight(3);
@@ -20,14 +21,6 @@ class LightArtillerySoldier extends Soldier {
         fill(this.typeColour);
 
         square(this.x, this.y, 15);
-
-        // or as a square with width and height 10
-
-        // if(this.drawSquare) {
-        //     noStroke();
-        //     fill(this.teamColour, this.alpha);
-        //     square(this.x, this.y, 10);
-        // }
     }
 
     @Override
@@ -41,7 +34,9 @@ class LightArtillerySoldier extends Soldier {
         this.target = s;
         // if there is no target, move east as if the unit's target is out of sight
         if(!this.target.alive) {
+            // try to move away from the edge momentarily.
             if(this.x <= 20) {
+                // deltaX or deltaY is set to 5 to accelerate movement.
                 this.deltaX = 5;
                 this.deltaY = 0;
             }
