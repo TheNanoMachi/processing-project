@@ -1,7 +1,8 @@
 class LightArtillerySoldier extends Soldier {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     LightArtillerySoldier(String team, color typeC, color teamC, ArtilleryProjectile artProj, float x, float y) {
-        super("Light Artillery", team, typeC, teamC, 200, artProj, 1, x, y);
+        super("Light Artillery", team, typeC, teamC, 1000, artProj, 1, x, y);
+        this.vitality = 40;
     }
 
     @Override
@@ -117,18 +118,11 @@ class LightArtillerySoldier extends Soldier {
 
         //Artillery units should not move if the target is in sight.
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
-            this.attack();
+            this.attack(s);
         }
         // otherwise, default to moving east
         else {
             this.move(deltaX*this.speed, 0);
-        }
-        // if the enemy has a projectile
-        // take damage from it
-        if(!(s.projectile == null)) {
-            if(abs(this.x - abs(s.projectile.x)) <= s.projectile.deltaX * s.projectile.speed && abs(this.y - abs(s.projectile.y)) <= s.projectile.deltaY * s.projectile.speed) {
-                this.takeDamage(s.projectile);
-            }
         }
 
         if(this.target != null) {
@@ -147,27 +141,24 @@ class LightArtillerySoldier extends Soldier {
             public void run() {
                 if(!alive) {
                     return;
-                }
-                fill(0, 255, 255, 128);
-                
-                ArtilleryProjectile temp = new ArtilleryProjectile(0, color(255), x, y, 50);
-                circle(target.x, target.y, temp.aoeRange);
+                }              
+                ArtilleryProjectile temp = new ArtilleryProjectile(0, color(255), x, y, 200);
                 if(teamColour == teamRed) {
                     for(Soldier s : blue.soldiers) {
-                        if(dist(x, y, s.x, s.y) <= temp.aoeRange / 2) {
+                        if(dist(s.x, s.y, target.x, target.y) <= temp.aoeRange / 2) {
                             s.takeDamage(temp, true);
                         }
-                        else if(dist(x, y, s.x, s.y) <= temp.aoeRange && dist(x, y, s.x, s.y) >= temp.aoeRange / 2) {
+                        else if(dist(s.x, s.y, target.x, target.y) <= temp.aoeRange && dist(s.x, s.y, target.x, target.y) >= temp.aoeRange / 2) {
                             s.takeDamage(temp, false);
                         }
                     }
                 }
                 else {
                     for(Soldier s : red.soldiers) {
-                        if(dist(x, y, s.x, s.y) <= temp.aoeRange / 2) {
+                        if(dist(s.x, s.y, target.x, target.y) <= temp.aoeRange / 2) {
                             s.takeDamage(temp, true);
                         }
-                        else if(dist(x, y, s.x, s.y) <= temp.aoeRange && dist(x, y, s.x, s.y) >= temp.aoeRange / 2) {
+                        else if(dist(s.x, s.y, target.x, target.y) <= temp.aoeRange && dist(s.x, s.y, target.x, target.y) >= temp.aoeRange / 2) {
                             s.takeDamage(temp, false);
                         }
                     }
@@ -175,7 +166,12 @@ class LightArtillerySoldier extends Soldier {
                 projectile.shoot(new LightArtillerySoldier(team, typeColour, teamColour, temp, x, y), target);
             }
         };
-        final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, 1, 1, SECONDS);
+        int randomStart = floor(random(700, 900));
+        int randomTime = floor(random(2000, 3500));
+        final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, randomStart, randomTime, MILLISECONDS);
         scheduler.schedule(new Runnable() {public void run() {attackHandle.cancel(true);}}, 1, SECONDS);
+        stroke(255, 120);
+        line(this.x, this.y, target.x, target.y);
+        target.display();
     }
 }

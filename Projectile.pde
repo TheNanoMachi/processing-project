@@ -39,6 +39,7 @@ class Projectile {
     }
 
     void shoot(Soldier s, Soldier target) {
+        // Reset certain parts of the projectile if necessary.
         if(this.resetShotFlag) {
             this.fired = false;
             this.gone = false;
@@ -52,8 +53,9 @@ class Projectile {
         if(this.gone) {
             return;
         }
-        deltaX = -0;
-        deltaY = -0;
+        deltaX = 0;
+        deltaY = 0;
+        // If the projectile has not yet been fired, set x, y, and targets
         if(!this.fired) {
             this.x = s.x;
             this.y = s.y;
@@ -62,6 +64,7 @@ class Projectile {
 
             fired = true; 
         }
+        // Pathfinding only needs to be done once.
         deltaX = (targetX - this.x);
         if (deltaX < 0) {
             deltaX = -1;
@@ -86,17 +89,14 @@ class Projectile {
         if(this.x - targetX <= 5 && this.y - targetY <= 5) {
             gone = true;
         }
-        
-
-        // stroke(colour);
-        // line(this.x, this.y, this.x-50, this.y-50);
     }
 
     void move(float xMag, float yMag) {
+        // Move the projectile as a circle, in case it needs to be displayed.
         this.x += xMag;
         this.y += yMag;
         stroke(colour);
-        circle(this.x, this.y, 50);
+        circle(this.x, this.y, 10);
     }
 
 }

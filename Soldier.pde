@@ -100,7 +100,6 @@ class Soldier {
     void display() {
         // Do not draw the soldier if it is dead.
         if(!this.alive) {
-            println("dead");
             return;
         }
 
@@ -244,29 +243,11 @@ class Soldier {
                 this.move(-deltaX*this.speed, 0);
             }
         }
-        // if the enemy has a projectile
-        // take damage from it
-        if(!(s.projectile == null)) {
-            if(abs(this.x - abs(s.projectile.x)) <= s.projectile.deltaX * s.projectile.speed && abs(this.y - abs(s.projectile.y)) <= s.projectile.deltaY * s.projectile.speed) {
-                this.takeDamage(s.projectile);
-            }
-        }
 
         if(this.target != null) {
             this.deathCheck();
         }
-        // if(this.x >= 1000) {
-        //     this.deltaX = -1;
-        //     while(this.x >= 500) {
-        //         this.move(this.deltaX*this.speed, 0);
-        //     }
-        // }
-        // else if(this.x <= 0) {
-        //     this.deltaX = 1;
-        //     while(this.x <= 500) {
-        //         this.move(this.deltaX*this.speed, 0);
-        //     }
-        // }
+        
         this.display();
     }
 
@@ -297,6 +278,9 @@ class Soldier {
     }
 
     void takeDamage(Projectile p) {
+        if(!this.alive) {
+            return;
+        }
         // remove damage from vitality. Die if necessary
         this.vitality -= p.damage;
         if(this.vitality <= 0) {
@@ -304,20 +288,27 @@ class Soldier {
         }
     }
 
+    // overloaded function for artillery only.
     void takeDamage(Projectile p, boolean inRange) {
-        // overloaded function for artillery only.
+        if(!this.alive) {
+            return;
+        }
         if(inRange) {
             this.vitality -= p.damage;
         }
         else {
-            this.vitality -= p.damage / 2;
+            this.vitality -= floor(p.damage / (float) 2);
         }
+        this.vitality -= p.damage;
         if(this.vitality <= 0) {
             this.die();
         }
     }
 
     void takeDamage(Soldier s) {
+        if(!this.alive) {
+            return;
+        }
         // Randomizes damage by randomMin, randomMax
         this.vitality -= s.damage + random(s.damageMin, s.damageMax);
         if(this.vitality <= 0) {

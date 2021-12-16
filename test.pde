@@ -2,13 +2,24 @@ import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import g4p_controls.*;
 
-PImage mudTerrain, grassTerrain;  //Possible terrains
+PImage mudTerrain, grassTerrain, currentTerrain;  //Possible terrains
 PFont font; 
-boolean play = false;  //Determines if the simulation is paused or not
+boolean play = false;  // Determines if the simulation is paused or not
+boolean isGrass = true; // Determines if the terrain is currently grassTerrain.
 int alpha = 128;
 int fireRateCount = 45;
-int timeUntilNextWave = 120;  //Time for both sides to spawn the next wave
+int setRedTime = 30;
+int redTimeUntilNextWave = setRedTime;
+int setBlueTime = 30;
+int blueTimeUntilNextWave = setBlueTime;
+
+int redLInf = 0, redHInf = 0, redLCav = 0, redHCav = 0, redLArt = 0, redHArt = 0, redSniper = 0;
+int blueLInf = 0, blueHInf = 0, blueLCav = 0, blueHCav = 0, blueLArt = 0, blueHArt = 0, blueSniper = 0;
+
+
+
 color teamRed = color(255, 0, 0), teamBlue = color(0, 0, 255), linf = color(255, 255, 0), hinf = color(128, 128, 0),
       lcav = color(255, 0, 255), hcav = color(128, 0, 128), lart = color(0, 255, 255), hart = color(0, 128, 128),
       lrinf = color(241, 255, 175);
@@ -30,21 +41,19 @@ Army red = new Army("Red Army", teamRed);
 
 void setup() {
   size(1000, 1000);
+  createGUI();
   mudTerrain = loadImage("muddy.png");
   grassTerrain = loadImage("grassy.png");
-  image(grassTerrain, 0, 0);
+  currentTerrain = grassTerrain;
+  image(currentTerrain, 0, 0);
   
   //Army Waves//
-  blue.addWave(6, 6, 6, 6, 6, 6, 6, 100);
-  //blue.addWave(0, 0, 0, 0, 6, 0, 6, 100);
+  blue.addWave(blueLInf, blueHInf, blueLCav, blueHCav, blueLArt, blueHArt, blueSniper, 100);
   for(Soldier s : blue.soldiers) {
     s.display();
   }
 
-
-
-  red.addWave(6, 6, 6, 6, 6, 6, 6, 900);
-  //red.addWave(0, 0, 0, 0, 6, 0, 6, 900);
+  red.addWave(redLInf, redHInf, redLCav, redHCav, redLArt, redHArt, redSniper, 100);
   for(Soldier s : red.soldiers) {
     s.display();
   }
@@ -53,7 +62,7 @@ void setup() {
 
 void draw() {
   
-  image(grassTerrain, 0, 0);
+  image(currentTerrain, 0, 0);
   red.checkDeaths2();
   blue.checkDeaths2();
 
@@ -102,41 +111,46 @@ void draw() {
   
   // Spawns a reinforcement wave if the amount of soldiers on each side is too low.
   if(red.soldiers.size() <= 12) {
-    red.addWave(5, 5, 5, 5, 5, 5, 5, 900);
+    red.addWave(redLInf, redHInf, redLCav, redHCav, redLArt, redHArt, redSniper, 900);
   }
   if(blue.soldiers.size() <= 12) {
-    blue.addWave(5, 5, 5, 5, 5, 5, 5, 100);
+    blue.addWave(blueLInf, blueHInf, blueLCav, blueHCav, blueLArt, blueHArt, blueSniper, 100);
   }
 
-  timeUntilNextWave--;
-  // Tries to spawn a wave every 4 seconds (at 30 fps), but won't spawn a wave if there are
-  // more than 70 soldiers on screen.
-  if(timeUntilNextWave == 0) {
-    if(blue.soldiers.size() <= 35) {
-      blue.addWave(5, 5, 5, 5, 5, 5, 5, 100);
+  redTimeUntilNextWave--;
+  blueTimeUntilNextWave--;
+  if(redTimeUntilNextWave == 0) {
+    redTimeUntilNextWave = setRedTime;
+    if(red.soldiers.size() <= 50) {
+      red.addWave(redLInf, redHInf, redLCav, redHCav, redLArt, redHArt, redSniper, 900);
     }
-    if(red.soldiers.size() <= 35) {
-      red.addWave(5, 5, 5, 5, 5, 5, 5, 900);
-    }
-      
-    timeUntilNextWave = 120;
-    currentFrame++;
   }
-
-
+  
+  if(blueTimeUntilNextWave == 0) {
+    blueTimeUntilNextWave = setBlueTime;
+    if(blue.soldiers.size() <= 50) {
+      blue.addWave(blueLInf, blueHInf, blueLCav, blueHCav, blueLArt, blueHArt, blueSniper, 100);
+    }
+  }
+    
   // Remove soldiers that are out of bounds.
   red.cullSoldiers();
   blue.cullSoldiers();
 
+  fill(0);
+  stroke(0);
+  rect(740, 10, 245, 50);
+
+  fill(0);
+  stroke(0);
+  rect(10, 10, 245, 50);
+
   fill(255,0,0);
   textSize(25);
-  
-  textFont(font);
   text("Red Casualties: " + redCasualties, 750, 40);
 
   fill(0,0,255);
   textSize(25);
-  textFont(font);
   text("Blue Casualties: " + blueCasualties, 20, 40);
 }
 

@@ -17,39 +17,43 @@ class Army {
 
   //Creates Army Waves//
   void addWave(int compLInf, int compHInf, int compLCav, int compHCav, int compLArt, int compHArt, int compLRInf, int spawnX) {
-    int spawnY = 100;
+    int spawnY = 70;
     for (int i = 0; i < compLInf; i++) {
       LightInfantrySoldier temp = new LightInfantrySoldier("Blue", linf, team, one, spawnX, spawnY);
       spawnY += this.gap;
       this.soldiers.add(temp);
     }
+    spawnY = 75;
     for (int i = 0; i < compHInf; i++) {
       HeavyInfantrySoldier temp = new HeavyInfantrySoldier("Blue", hinf, team, one, spawnX, spawnY);
       spawnY += this.gap;
       this.soldiers.add(temp);
     }
+    spawnY = 90;
     for (int i = 0; i < compLCav; i++) {
       LightCavalrySoldier temp = new LightCavalrySoldier("Blue", lcav, team, spawnX, spawnY);
       spawnY += this.gap;
       this.soldiers.add(temp);
     }
+    spawnY = 105;
     for (int i = 0; i < compHCav; i++) {
       HeavyCavalrySoldier temp = new HeavyCavalrySoldier("Blue", hcav, team, spawnX, spawnY);
       spawnY += this.gap;
       this.soldiers.add(temp);
     }
-    // Resets spawn height to 200 once the infantry and cavalry are done.
-    spawnY = 200;
+    spawnY = 120;
     for (int i = 0; i < compHArt; i++) {
       HeavyArtillerySoldier temp = new HeavyArtillerySoldier("Blue", hart, team, cannonShell, spawnX, spawnY);
       spawnY += this.gap;
       this.soldiers.add(temp);
     }
+    spawnY = 135;
     for (int i = 0; i < compLArt; i++) {
       LightArtillerySoldier temp = new LightArtillerySoldier("Blue", lart, team, cannonShell, spawnX, spawnY);
       spawnY += this.gap;
       this.soldiers.add(temp);
     }
+    spawnY = 150;
     for (int i = 0; i < compLRInf; i++) {
       SoldierSniper temp = new SoldierSniper("Blue", lrinf, team, one, spawnX, spawnY);
       spawnY += this.gap;

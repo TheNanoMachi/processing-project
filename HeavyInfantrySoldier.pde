@@ -2,9 +2,9 @@ class HeavyInfantrySoldier extends Soldier {
     HeavyInfantrySoldier(String team, color typeC, color teamC, Projectile infProj, float x, float y) {
         super("Heavy Infantry", team, typeC, teamC, 100, infProj, 1, x, y);
         this.vitality = 20;
-        this.damage = 20;
-        this.damageMin = -5;
-        this.damageMax = 5;
+        this.damage = 17;
+        this.damageMin = -3;
+        this.damageMax = 3;
     }
 
     @Override
@@ -16,6 +16,7 @@ class HeavyInfantrySoldier extends Soldier {
         fill(0, 0, 0, 0);
         stroke(this.teamColour);
         strokeWeight(5);
+        // Explained more in HeavyCavalrySoldier.
         circle(this.x, this.y, 40);
         if(this.teamColour == teamBlue) {
             for(Soldier s : red.soldiers) {

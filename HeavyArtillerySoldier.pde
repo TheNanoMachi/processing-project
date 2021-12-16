@@ -3,7 +3,8 @@ class HeavyArtillerySoldier extends Soldier {
     HeavyArtillerySoldier(String team, color typeC, color teamC, ArtilleryProjectile artProj, float x, float y) {
         // String type, String team, color typeC,
         // color teamC, int sight, Projectile proj, float speed, float x, float y
-        super("Heavy Artillery", team, typeC, teamC, 200, artProj, 0.5, x, y);
+        super("Heavy Artillery", team, typeC, teamC, 10000, artProj, 0.5, x, y);
+        this.vitality = 40;
     }
 
     @Override
@@ -12,8 +13,6 @@ class HeavyArtillerySoldier extends Soldier {
         if(!this.alive) {
             return;
         }
-
-        // Draw the soldier as a circle with radius 5
         stroke(this.teamColour);
 
         strokeWeight(3);
@@ -22,13 +21,6 @@ class HeavyArtillerySoldier extends Soldier {
 
         square(this.x, this.y, 15);
 
-        // or as a square with width and height 10
-
-        // if(this.drawSquare) {
-        //     noStroke();
-        //     fill(this.teamColour, this.alpha);
-        //     square(this.x, this.y, 10);
-        // }
     }
 
     @Override
@@ -40,8 +32,10 @@ class HeavyArtillerySoldier extends Soldier {
         }
         // set target
         this.target = s;
-        // if there is no target, move east as if the unit's target is out of sight
+        // if there is no target / the target is dead, move east as if the unit's target is out of sight
         if(!this.target.alive) {
+            // If the unit is out of bounds
+            // Try to move away. (Usually this does not succeed.)
             if(this.x <= 20) {
                 this.deltaX = 5;
                 this.deltaY = 0;
@@ -61,6 +55,10 @@ class HeavyArtillerySoldier extends Soldier {
             return;
         }
         if (!((this.x <= 10) || (this.x >= 990) || (this.y <= 10) || (this.y >= 990))) {
+            // Pathfind towards the target.
+            // Direction is determined by the sign of movement direction
+            // for both the x and y directions.
+            // Explained more in the soldier class.
             this.deltaX = (s.x - this.x);
             if (this.deltaX < 0) {
                 this.deltaX = -1;
@@ -106,58 +104,51 @@ class HeavyArtillerySoldier extends Soldier {
         strokeWeight(2);
         fill(0, 0, 0, 0);
 
-        //Artillery units should not move if the target is in sight.
+        // Artillery units should not move if the target is in sight.
+        // They will attack instead.
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
-                this.attack();
+            this.attack1(s);
         }
         // otherwise, default to moving east
         else {
             this.move(deltaX*this.speed, 0);
         }
-        // if the enemy has a projectile
-        // take damage from it
-        if(!(s.projectile == null)) {
-            if(abs(this.x - abs(s.projectile.x)) <= s.projectile.deltaX * s.projectile.speed && abs(this.y - abs(s.projectile.y)) <= s.projectile.deltaY * s.projectile.speed) {
-                this.takeDamage(s.projectile);
-            }
-        }
 
+        // Check if this unit is dead.
         if(this.target != null) {
             this.deathCheck();
         }
         this.display();
     }
 
-    void attack(Soldier target) {
+    void attack1(Soldier target) {
         // fire projectile
         if(!this.alive) {
             return;
         }
+        // Create a Runnable object that contains the code for attacking.
         final Runnable attack = new Runnable() {
             public void run() {
                 if(!alive) {
                     return;
                 }
-                fill(0, 255, 255, 128);
-                
-                ArtilleryProjectile temp = new ArtilleryProjectile(0, color(255), x, y, 60);
-                circle(target.x, target.y, temp.aoeRange);
+                ArtilleryProjectile temp = new ArtilleryProjectile(0, color(255), x, y, 150);
                 if(teamColour == teamRed) {
                     for(Soldier s : blue.soldiers) {
-                        if(dist(x, y, s.x, s.y) <= temp.aoeRange / 2) {
+                        if(dist(s.x, s.y, target.x, target.y) <= temp.aoeRange / 2) {
                             s.takeDamage(temp, true);
                         }
-                        else if(dist(x, y, s.x, s.y) <= temp.aoeRange && dist(x, y, s.x, s.y) >= temp.aoeRange / 2) {
+                        else if(dist(s.x, s.y, target.x, target.y) <= temp.aoeRange && dist(s.x, s.y, target.x, target.y) >= temp.aoeRange / 2) {
                             s.takeDamage(temp, false);
                         }
                     }
                 }
                 else {
                     for(Soldier s : red.soldiers) {
-                        if(dist(x, y, s.x, s.y) <= temp.aoeRange / 2) {
+                        if(dist(s.x, s.y, target.x, target.y) <= temp.aoeRange / 2) {
                             s.takeDamage(temp, true);
                         }
-                        else if(dist(x, y, s.x, s.y) <= temp.aoeRange && dist(x, y, s.x, s.y) >= temp.aoeRange / 2) {
+                        else if(dist(s.x, s.y, target.x, target.y) <= temp.aoeRange && dist(s.x, s.y, target.x, target.y) >= temp.aoeRange / 2) {
                             s.takeDamage(temp, false);
                         }
                     }
@@ -165,8 +156,18 @@ class HeavyArtillerySoldier extends Soldier {
                 projectile.shoot(new HeavyArtillerySoldier(team, typeColour, teamColour, temp, x, y), target);
             }
         };
-        final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, 1, 1, SECONDS);
-        scheduler.schedule(new Runnable() {public void run() {attackHandle.cancel(true);}}, 1, SECONDS);
+        // Set random starting delay and interval.
+        int randomStart = floor(random(700, 900));
+        int randomTime = floor(random(3000, 4000));
+        // Use the scheduleAtFixedRate function (a part of ScheduledFuture) to attack at a fixed rate.
+        final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, randomStart, 500, MILLISECONDS);
+        scheduler.schedule(new Runnable() {public void run() {attackHandle.cancel(true);}}, 1000, MILLISECONDS);
+        // Low alpha (transparency) line.
+        stroke(255, 120);
+        // Draw targeting line.
+        line(this.x, this.y, target.x, target.y);
+        // Display the target to ensure that it is on top of the line.
+        target.display();
     }
 
 }

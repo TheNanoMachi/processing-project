@@ -1,13 +1,13 @@
 class LightCavalrySoldier extends Soldier {
     LightCavalrySoldier(String team, color typeC, color teamC) {
-        super("Light Cavalry", team, typeC, teamC, 150, 2, 0, 0);
+        super("Light Cavalry", team, typeC, teamC, 50, 2, 0, 0);
         this.vitality = 10;
-        this.damage = 10;
+        this.damage = 15;
         this.damageMin = -2;
         this.damageMax = 2;
     }
     LightCavalrySoldier(String team, color typeC, color teamC, float x, float y) {
-        super("Light Cavalry", team, typeC, teamC, 150, null, 2, x, y);
+        super("Light Cavalry", team, typeC, teamC, 50, null, 2, x, y);
         this.vitality = 10;
         this.damage = 10;
         this.damageMin = -2;
@@ -23,6 +23,7 @@ class LightCavalrySoldier extends Soldier {
         fill(0, 0, 0, 0);
         stroke(this.teamColour);
         strokeWeight(5);
+        // Explained more in HeavyCavalrySoldier.
         circle(this.x, this.y, 40);
         if(this.teamColour == teamBlue) {
             for(Soldier s : red.soldiers) {

@@ -16,6 +16,7 @@ class LightInfantrySoldier extends Soldier {
         fill(0, 0, 0, 0);
         stroke(this.teamColour);
         strokeWeight(5);
+        // Explained more in HeavyCavalrySoldier.
         circle(this.x, this.y, 40);
         if(this.teamColour == teamBlue) {
             for(Soldier s : red.soldiers) {

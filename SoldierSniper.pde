@@ -5,11 +5,13 @@ class SoldierSniper extends Soldier {
         super("Sniper", team, typeC, teamC, 500, sniperProj, 1);
         attacked = false;
         running = false;
+        this.vitality = 1;
     }
     SoldierSniper(String team, color typeC, color teamC, Sniper_Projectile sniperProj, float x, float y) {
         super("Sniper", team, typeC, teamC, 500, sniperProj, 1, x, y);
         attacked = false;
         running = false;
+        this.vitality = 1;
     }
 
     @Override
@@ -63,13 +65,6 @@ class SoldierSniper extends Soldier {
         fill(0, 0, 0, 0);
         //circle(this.x, this.y, this.sight*2);
         if(dist(this.x, this.y, s.x, s.y) <= this.sight) {
-            //line(this.x, this.y, s.x, s.y);
-            // if(this.running) {
-            //     // move away if target is within 50 pixels of the unit
-            //     //this.move(-deltaX*this.speed, -deltaY*this.speed);
-            //     this.attacked = true;
-            // }
-
             
             if(dist(this.x, this.y, s.x, s.y) <= 300) {
                 this.attack(s);
@@ -99,8 +94,6 @@ class SoldierSniper extends Soldier {
                 if(!alive) {
                     return;
                 }
-                fill(255);
-                line(x, y, target.x, target.y);
                 Sniper_Projectile temp = new Sniper_Projectile(0, color(255), x, y);
                 if(teamColour == teamRed) {
                     for(Soldier s : blue.soldiers) {
@@ -119,9 +112,10 @@ class SoldierSniper extends Soldier {
                 projectile.shoot(new SoldierSniper(team, typeColour, teamColour, temp, x, y), target);
             }
         };
-        final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, 1, 1, SECONDS);
+        int randomTime = floor(random(1500, 2500));
+        final ScheduledFuture<?> attackHandle = scheduler.scheduleAtFixedRate(attack, randomTime, randomTime, MILLISECONDS);
         scheduler.schedule(new Runnable() {public void run() {attackHandle.cancel(true);}}, 1, SECONDS);
+        stroke(teamColour, 150);
+        line(this.x, this.y, target.x, target.y);
     }
-
-    
 }
