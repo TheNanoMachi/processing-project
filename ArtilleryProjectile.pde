@@ -18,11 +18,10 @@ class ArtilleryProjectile extends Projectile {
             this.y = s.y;
             this.targetX = target.x;
             this.targetY = target.y;
-            println("working");
             fired = true; 
 
         }
-
+        // explained more in Projectile.
         deltaX = (targetX - this.x);
         if (deltaX < 0) {
             deltaX = -1;
@@ -43,13 +42,8 @@ class ArtilleryProjectile extends Projectile {
         else {
             deltaY = 0;
         }
-
-        println(deltaX, deltaY, this.x, this.y, targetX, targetY);
         this.move(deltaX*this.speed, deltaY*this.speed);
         if(this.x - targetX <= 5 && this.y - targetY <= 5) {
-            // since this is an artillery projectile
-            // it does area of effect damage
-            circle(this.x, this.y, aoeRange);
             gone = true;
         }
     }
